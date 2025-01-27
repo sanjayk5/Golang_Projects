@@ -8,23 +8,27 @@ While the service is running and listening on the localhost:8080, a REST API res
 
 
 Get list of all books:
-curl http://localhost:8080/books \
+
+$ curl http://localhost:8080/books \
 > --header "Content-Type: application/json" \
 > --request "GET"
 
 Get a specific by its ID:
-curl http://localhost:8080/books/3 \
+
+$ curl http://localhost:8080/books/3 \
 > --header "Content-Type: application/json" \
 > --request "GET"
 
 Add a new book:
-curl http://localhost:8080/books \
+
+$ curl http://localhost:8080/books \
 > --include \
 > --header "Content-Type: application/json" \
 > --request "POST" \
 > --data '{"id": "8", "title": "Dynamic Programming", "author": "Meenakshi Rawat"}'
 
 Delete a book:
-curl http://localhost:8080/books/2 \
+
+$ curl http://localhost:8080/books/2 \
 > --header "Content-Type: application/json" \
 > --request "DELETE"
