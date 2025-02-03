@@ -7,7 +7,10 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
+
+var validate = validator.New()
 
 // Create a new book
 func CreateBook(c *gin.Context) {
@@ -16,6 +19,13 @@ func CreateBook(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	// Validate the struct
+	if err := validate.Struct(book); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	database.DB.Create(&book)
 	c.JSON(http.StatusCreated, book)
 }
@@ -46,11 +56,25 @@ func UpdateBook(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Book not found"})
 		return
 	}
-	if err := c.ShouldBindJSON(&book); err != nil {
+
+	// Parse and validate JSON input
+	var updatedBook models.Book
+	if err := c.ShouldBindJSON(&updatedBook); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	// Validate the struct
+	if err := validate.Struct(updatedBook); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Update book details
+	book.Title = updatedBook.Title
+	book.Author = updatedBook.Author
 	database.DB.Save(&book)
+
 	c.JSON(http.StatusOK, book)
 }
 
